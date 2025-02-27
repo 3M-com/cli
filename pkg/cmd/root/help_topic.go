@@ -43,7 +43,7 @@ var HelpTopics = []helpTopic{
 		short: "Environment variables that can be used with gh",
 		long: heredoc.Docf(`
 			%[1]sGH_TOKEN%[1]s, %[1]sGITHUB_TOKEN%[1]s (in order of precedence): an authentication token that will be used when
-			a command targets either github.com or a subdomain of ghe.com. Setting this avoids being prompted to
+			a command targets either <github.com> or a subdomain of <ghe.com>. Setting this avoids being prompted to
 			authenticate and takes precedence over previously stored credentials.
 
 			%[1]sGH_ENTERPRISE_TOKEN%[1]s, %[1]sGITHUB_ENTERPRISE_TOKEN%[1]s (in order of precedence): an authentication
@@ -86,9 +86,13 @@ var HelpTopics = []helpTopic{
 			available in the viewport. When the value is a percentage, it will be applied against
 			the number of columns available in the current viewport.
 
-			%[1]sGH_NO_UPDATE_NOTIFIER%[1]s: set to any value to disable update notifications. By default, gh
-			checks for new releases once every 24 hours and displays an upgrade notice on standard
-			error if a newer version was found.
+			%[1]sGH_NO_UPDATE_NOTIFIER%[1]s: set to any value to disable GitHub CLI update notifications.
+			When any command is executed, gh checks for new versions once every 24 hours.
+			If a newer version was found, an upgrade notice is displayed on standard error.
+
+			%[1]sGH_NO_EXTENSION_UPDATE_NOTIFIER%[1]s: set to any value to disable GitHub CLI extension update notifications.
+			When an extension is executed, gh checks for new versions for the executed extension once every 24 hours.
+			If a newer version was found, an upgrade notice is displayed on standard error.
 
 			%[1]sGH_CONFIG_DIR%[1]s: the directory where gh will store configuration files. If not specified,
 			the default value will be one of the following paths (in order of precedence):
@@ -150,7 +154,7 @@ var HelpTopics = []helpTopic{
 			To learn more about Go templates, see: <https://golang.org/pkg/text/template/>.
 		`, "`"),
 		example: heredoc.Doc(`
-			# default output format
+			# Default output format
 			$ gh pr list
 			Showing 23 of 23 open pull requests in cli/cli
 
@@ -159,7 +163,7 @@ var HelpTopics = []helpTopic{
 			#125  An exciting new feature         feature-branch                   about 2 days ago
 
 
-			# adding the --json flag with a list of field names
+			# Adding the --json flag with a list of field names
 			$ gh pr list --json number,title,author
 			[
 			  {
@@ -186,13 +190,14 @@ var HelpTopics = []helpTopic{
 			]
 
 
-			# adding the --jq flag and selecting fields from the array
+			# Adding the --jq flag and selecting fields from the array
 			$ gh pr list --json author --jq '.[].author.login'
 			monalisa
 			codercat
 			cli-maintainer
 
-			# --jq can be used to implement more complex filtering and output changes:
+
+			# --jq can be used to implement more complex filtering and output changes
 			$ gh issue list --json number,title,labels --jq \
 			  'map(select((.labels | length) > 0))    # must have labels
 			  | map(.labels = (.labels | map(.name))) # show only the label names
@@ -223,11 +228,13 @@ var HelpTopics = []helpTopic{
 			      "title": "An exciting new feature"
 			    }
 			  ]
-			# using the --template flag with the hyperlink helper
-			gh issue list --json title,url --template '{{range .}}{{hyperlink .url .title}}{{"\n"}}{{end}}'
 
 
-			# adding the --template flag and modifying the display format
+			# Using the --template flag with the hyperlink helper
+			$ gh issue list --json title,url --template '{{range .}}{{hyperlink .url .title}}{{"\n"}}{{end}}'
+
+
+			# Adding the --template flag and modifying the display format
 			$ gh pr list --json number,title,headRefName,updatedAt --template \
 				'{{range .}}{{tablerow (printf "#%v" .number | autocolor "green") .title .headRefName (timeago .updatedAt)}}{{end}}'
 
@@ -236,7 +243,7 @@ var HelpTopics = []helpTopic{
 			#125  An exciting new feature     feature-branch            about 2 days ago
 
 
-			# a more complex example with the --template flag which formats a pull request using multiple tables with headers:
+			# A more complex example with the --template flag which formats a pull request using multiple tables with headers
 			$ gh pr view 3519 --json number,title,body,reviews,assignees --template \
 			'{{printf "#%v" .number}} {{.title}}
 
